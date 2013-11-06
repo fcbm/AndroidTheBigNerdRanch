@@ -96,6 +96,6 @@ public class DatePickerFragment extends DialogFragment
 		// it may seem weird, but we will use Fragment.onActivityResult()
 		// to pass the result back to the caller fragment
 		// NOTE: call getTargetFragment and getTargetRequestCode
-		getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);
+		getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 	}
 }
