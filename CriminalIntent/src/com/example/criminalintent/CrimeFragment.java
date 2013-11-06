@@ -1,14 +1,19 @@
 package com.example.criminalintent;
 
+import java.util.Date;
 import java.util.UUID;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +29,8 @@ public class CrimeFragment extends Fragment {
 	private CheckBox mSolvedCheckBox;
 	
 	public static final String EXTRA_CRIME_ID = "com.example.criminalintent.crime_id";
+	private static final String DATE_DIALOG_TAG = "date";
+	private static final int REQUEST_DATE = 0;
 
 	public static Fragment newInstance(UUID crimeId)
 	{
@@ -77,8 +84,21 @@ public class CrimeFragment extends Fragment {
 		});
 
 		mDateButton = (Button) v.findViewById(R.id.crime_data);
-		mDateButton.setText( DateFormat.format( "EEEE, MMM d, yyyy", mCrime.getDate()).toString() );
-		mDateButton.setEnabled(false);
+		updateDate();
+		mDateButton.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				DatePickerFragment dpf = DatePickerFragment.newInstance( mCrime.getDate() );
+				// This creates a connection similar to the one kept by ActivityManager between
+				// the Activity calling setActivityForeResult and the one calling setResult
+				// The connection here is kept by FragmentManager and says that the target for
+				// result of DatePickerFragment is CrimeFragment
+				dpf.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+				dpf.show(fm, DATE_DIALOG_TAG);
+			}
+		});
 		
 		mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
 		mSolvedCheckBox.setChecked( mCrime.isSolved() );
@@ -94,4 +114,21 @@ public class CrimeFragment extends Fragment {
 		return v;
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (resultCode != Activity.RESULT_OK) return;
+		
+		if (requestCode == REQUEST_DATE)
+		{
+			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			mCrime.setDate(date);
+			updateDate();
+		}
+	}
+	
+	private void updateDate()
+	{
+		mDateButton.setText( DateFormat.format( "EEEE, MMM d, yyyy", mCrime.getDate()).toString() );
+	}
 }
