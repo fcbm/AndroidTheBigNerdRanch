@@ -40,6 +40,14 @@
         android:layout_weight="1"
         />
     
+    <Button
+        android:id="@+id/crime_datetime"
+        android:text="@string/crime_pick_datetime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />      
+    
     <CheckBox
         android:id="@+id/crime_solved" 
         android:layout_width="wrap_content"

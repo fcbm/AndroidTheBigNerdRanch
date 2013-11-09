@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/radio_pickDateOrTime"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
+    
+    <!--  
+    	RadioGroup is subclass of LinearLayout, 
+    	thus it needs an orientation and can hold
+    	RadioButton and other Views 
+    -->
+    
+	<TextView
+    	android:id="@+id/textView_currentDateTime" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:gravity="center"
+    	/>
+	    
+    <RadioButton
+		android:id="@+id/radio_pickDate"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/set_date"
+    	android:checked="true"
+    	/>
+    
+	<RadioButton
+    	android:id="@+id/radio_pickTime"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/set_time"
+    	/>
+
+	<Button 
+	    android:id="@+id/radio_pickChoose"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/choose"
+	    />
+	
+</RadioGroup>

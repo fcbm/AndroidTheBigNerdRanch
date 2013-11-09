@@ -26,11 +26,14 @@ public class CrimeFragment extends Fragment {
 	private Crime mCrime;
 	private EditText mTitleField; 
 	private Button mDateButton;
+	private Button mDateTimeButton;
 	private CheckBox mSolvedCheckBox;
 	
 	public static final String EXTRA_CRIME_ID = "com.example.criminalintent.crime_id";
 	private static final String DATE_DIALOG_TAG = "date";
+	private static final String DATE_OR_TIME_DIALOG_TAG = "date_or_time";
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_DATE_OR_TIME = 1;
 
 	public static Fragment newInstance(UUID crimeId)
 	{
@@ -47,7 +50,6 @@ public class CrimeFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
 		// mCrime = new Crime();
 		
 		// CrimeFragment  wouldn't be a reusable building block because it expects that it 
@@ -62,6 +64,7 @@ public class CrimeFragment extends Fragment {
 	{
 		// The third parameter (boolean) tells the layoutInflater whether to add the inflated view
 		// to the view's parent. We pass false because we will add the View in the Activity's code
+		// TODO: check when is the case to pass true
 		View v = inflater.inflate( R.layout.fragment_crime , parent, false);
 		
 		mTitleField = (EditText) v.findViewById( R.id.crime_title );
@@ -93,10 +96,22 @@ public class CrimeFragment extends Fragment {
 				DatePickerFragment dpf = DatePickerFragment.newInstance( mCrime.getDate() );
 				// This creates a connection similar to the one kept by ActivityManager between
 				// the Activity calling setActivityForeResult and the one calling setResult
+				// NOTE: Fragment doesn't have setResult()
 				// The connection here is kept by FragmentManager and says that the target for
 				// result of DatePickerFragment is CrimeFragment
 				dpf.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
 				dpf.show(fm, DATE_DIALOG_TAG);
+			}
+		});
+		
+		mDateTimeButton = (Button) v.findViewById( R.id.crime_datetime );
+		mDateTimeButton.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DateTimeFragment dtf = DateTimeFragment.newInstance( mCrime.getDate() );
+				dtf.setTargetFragment( CrimeFragment.this, REQUEST_DATE_OR_TIME);
+				dtf.show( getActivity().getSupportFragmentManager(), DATE_OR_TIME_DIALOG_TAG);
 			}
 		});
 		
@@ -125,10 +140,16 @@ public class CrimeFragment extends Fragment {
 			mCrime.setDate(date);
 			updateDate();
 		}
+		else if (requestCode == REQUEST_DATE_OR_TIME)
+		{
+			Date date = (Date) data.getSerializableExtra( DateTimeFragment.EXTRA_DATE );
+			mCrime.setDate(date);
+			updateDate();
+		}
 	}
 	
 	private void updateDate()
 	{
-		mDateButton.setText( DateFormat.format( "EEEE, MMM d, yyyy", mCrime.getDate()).toString() );
+		mDateButton.setText( DateFormat.format( "EEEE, MMM d, yyyy HH:mm", mCrime.getDate()).toString() );
 	}
 }

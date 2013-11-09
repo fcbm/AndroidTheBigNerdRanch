@@ -59,6 +59,10 @@ public class CrimeListFragment extends ListFragment {
 	{
 		public CrimeAdapter(ArrayList<Crime> crimes)
 		{
+			// The call to the superclass constructor is required to properly
+			// hook up the dataset of Crime. 
+			// We'll not use a pre-defined layout so we can pass 0 for the Layout ID
+			// TODO: try to pass a default layout
 			super(getActivity(), 0, crimes);
 		}
 		

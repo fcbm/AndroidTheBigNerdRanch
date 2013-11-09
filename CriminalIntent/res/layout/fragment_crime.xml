@@ -33,6 +33,15 @@
         android:layout_marginRight="16dp" 
         />
     
+    <Button
+        android:id="@+id/crime_datetime"
+        android:text="@string/crime_pick_datetime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" 
+        />    
+
     <CheckBox
         android:id="@+id/crime_solved" 
         android:layout_width="match_parent"

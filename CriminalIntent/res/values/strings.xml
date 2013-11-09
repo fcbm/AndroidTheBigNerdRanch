@@ -9,5 +9,10 @@
     <string name="crime_details_label">Details</string>
     <string name="crimes_title">Crimes</string>
     <string name="date_picker_title">Date of crime</string>
+    <string name="date_time_picker_title">Set date or time:</string>
+    <string name="set_time"> Time </string>
+    <string name="set_date"> Date </string>
+    <string name="choose"> Choose </string>
+    <string name="crime_pick_datetime"> Pick Date Or Time </string>
 
 </resources>

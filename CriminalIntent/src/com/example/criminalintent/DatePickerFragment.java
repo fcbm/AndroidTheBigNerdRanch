@@ -34,8 +34,10 @@ public class DatePickerFragment extends DialogFragment
 	}
 	
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstace)
+	public Dialog onCreateDialog(Bundle savedInstance)
 	{
+		super.onCreateDialog( savedInstance );
+		
 		// We use a layout here and not directly the DatePicker View
 		// because it makes modification easy if we want to change the 
 		// content of the Dialog later
