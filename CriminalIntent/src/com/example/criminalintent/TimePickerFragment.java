@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
@@ -38,8 +40,12 @@ public class TimePickerFragment extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		View v = inflater.inflate( R.layout.dialog_time, container);
+		mDate = (Date) getArguments().getSerializable( ARG_TIME );
+
+		setupTimerPicker( v );
 		
-		return null;
+		return v;
 	}
 	*/
 	
@@ -49,6 +55,30 @@ public class TimePickerFragment extends DialogFragment {
 		View v = getActivity().getLayoutInflater().inflate( R.layout.dialog_time, null);
 		mDate = (Date) getArguments().getSerializable( ARG_TIME );
 		
+		setupTimerPicker(v);
+		
+		return new AlertDialog.Builder( getActivity() ).
+				setTitle( R.string.set_time ).
+				setView( v ).
+				setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) { sendResult(); }
+					}).
+				create();
+	}
+
+	private void sendResult()
+	{
+		if (getTargetFragment() == null)
+			return;
+		
+		Intent i = new Intent();
+		i.putExtra( TimePickerFragment.EXTRA_TIME, mDate);
+		getTargetFragment().onActivityResult( getTargetRequestCode(), Activity.RESULT_OK, i); 
+	}
+	
+	private void setupTimerPicker(View v)
+	{
 		TimePicker tp = (TimePicker) v.findViewById( R.id.dialog_time_timePicker);
 		final Calendar c = Calendar.getInstance();
 		c.setTime( mDate );
@@ -63,8 +93,6 @@ public class TimePickerFragment extends DialogFragment {
 		tp.setCurrentHour( hour );
 		tp.setCurrentMinute( minute );
 		
-		Log.d(TAG, "H " + hour + " M "  + minute);
-		
 		tp.setOnTimeChangedListener( new OnTimeChangedListener( ) {
 			
 			@Override
@@ -78,25 +106,6 @@ public class TimePickerFragment extends DialogFragment {
 				Log.d(TAG, "New: H " + hourOfDay + " M " + minute);
 				getArguments().putSerializable(EXTRA_TIME, mDate);
 			}
-		});
-		
-		return new AlertDialog.Builder( getActivity() ).
-				setTitle( R.string.set_time ).
-				setView( v ).
-				setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) { sendResult(); }
-					}).
-				create();
-	}
-	
-	private void sendResult()
-	{
-		if (getTargetFragment() == null)
-			return;
-		
-		Intent i = new Intent();
-		i.putExtra( TimePickerFragment.EXTRA_TIME, mDate);
-		getTargetFragment().onActivityResult( getTargetRequestCode(), Activity.RESULT_OK, i); 
+		});		
 	}
 }
