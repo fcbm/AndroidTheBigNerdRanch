@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    >
+    <!--
+    	ImageView is not inside a TableRow to span the entire screen  
+     -->
+    
+    <ImageView 
+        android:src="@drawable/armstrong_on_moon"
+        android:contentDescription="@string/hellomoon_description"
+		android:layout_width="match_parent"
+    	android:layout_height="match_parent" 
+		
+		android:scaleType="centerInside"
+		
+		android:layout_weight="1"
+        />
+    <!-- 
+    <SurfaceView
+        android:id="@+id/surfaceView" 
+		android:layout_width="match_parent"
+    	android:layout_height="match_parent" 
+		android:scaleType="centerInside"
+		
+		android:layout_weight="1"
+
+        />
+     -->
+    <!--
+    	Notice that the TableRow widget does not have to declare
+    	height and width attributes. It uses the TableLayout's
+    	width and height as well as every other attribute od the
+    	TableLayout
+    	A nested LinearLayout would offer more flexibility   
+     -->
+    
+    <TableRow
+        android:gravity="center|bottom"
+        android:layout_weight="0" 
+        >
+        <!-- 
+        <Button
+            android:id="@+id/hellomoon_playVideo"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/hellomoon_playVideo" 
+            />
+         -->        
+        <Button
+            android:id="@+id/hellomoon_playButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/hellomoon_play" 
+            />
+
+        <Button
+            android:id="@+id/hellomoon_stopButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/hellomoon_stop" 
+            />
+    </TableRow>
+
+</TableLayout>
