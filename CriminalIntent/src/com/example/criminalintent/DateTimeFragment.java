@@ -28,10 +28,9 @@ public class DateTimeFragment extends DialogFragment {
 	public static final String EXTRA_DATE = "DateTimeFragment.extra_date";
 	
 	private Date mDate ;
-	private int mCurrentRequestCode = -1;
+	private int mCurrentRequestCode = REQUEST_DATE;
 	private TextView mTvDateTime;
 	private Button mChoose;
-	
 	
 	public static DateTimeFragment newInstance(Date date)
 	{
@@ -124,7 +123,7 @@ public class DateTimeFragment extends DialogFragment {
 	private void updateDateTimeLabel()
 	{
 		if (mTvDateTime != null && mDate != null)
-			mTvDateTime.setText( DateFormat.format( "EEEE, MMM d, yyyy HH:mm", mDate ));
+			mTvDateTime.setText( DateFormat.format( "EEEE, MMM d, yyyy kk:mm", mDate ));
 	}
 	
 	@Override
