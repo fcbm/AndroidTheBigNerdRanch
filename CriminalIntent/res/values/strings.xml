@@ -22,5 +22,14 @@
     <string name="empty_list">No Crimes ..so far!</string>
 	<string name="take">Take!</string>
 	<string name="crime_picture">Crime Picture</string>
+	<string name="crime_suspect">Choose Suspect</string>
+	<string name="crime_report_text">Send Crime Report</string>
+	<string name="crime_report">%1$s! The crime was discovered on %2$s. %3$s, and %4$s</string>
+	<string name="crime_report_solved">The case is solved</string>
+	<string name="crime_report_unsolved">The case is not solved</string>
+	<string name="crime_report_no_suspect">There is no suspect.</string>
+	<string name="crime_report_suspect">The suspect is %s.</string>
+	<string name="crime_report_subject">CriminalIntent Crime Report</string>
+	<string name="send_report">Send crime report via</string>
 </resources>
 

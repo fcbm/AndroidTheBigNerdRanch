@@ -93,4 +93,21 @@
         android:text="@string/crime_solved_label"
         />
     
+    <Button 
+        android:id="@+id/crime_suspectButton"
+        android:text="@string/crime_suspect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" 
+        />
+    <Button 
+        android:id="@+id/crime_reportButton"
+        android:text="@string/crime_report_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" 
+        />
+    
 </LinearLayout>
