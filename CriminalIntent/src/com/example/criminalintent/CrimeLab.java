@@ -73,6 +73,7 @@ public class CrimeLab {
 		mCrimes.add(c);
 	}
 	
+	// TODO: handle drop photo when deleting a Crime
 	public void deleteCrime(Crime c)
 	{
 		mCrimes.remove( c );
