@@ -3,15 +3,20 @@ package com.example.criminalintent;
 import java.util.Date;
 import java.util.UUID;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -50,6 +55,10 @@ public class CrimeFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		// Notice we need to call setHasOptionsMenu in order to use the menu
+		setHasOptionsMenu( true );
+		
 		// mCrime = new Crime();
 		
 		// CrimeFragment  wouldn't be a reusable building block because it expects that it 
@@ -59,6 +68,19 @@ public class CrimeFragment extends Fragment {
 		mCrime = CrimeLab.get( getActivity() ).getCrime(id);
 	}
 	
+	@TargetApi(11)
+	private void setupAncestralNavigation()
+	{
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		{
+			// This call only enables the button but doesn't define the behavior
+			if (NavUtils.getParentActivityName(getActivity()) != null)
+			{
+				getActivity().getActionBar().setDisplayHomeAsUpEnabled( true );
+			}
+		}
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
 	{
@@ -66,6 +88,8 @@ public class CrimeFragment extends Fragment {
 		// to the view's parent. We pass false because we will add the View in the Activity's code
 		// TODO: check when is the case to pass true
 		View v = inflater.inflate( R.layout.fragment_crime , parent, false);
+
+		setupAncestralNavigation();
 		
 		mTitleField = (EditText) v.findViewById( R.id.crime_title );
 		mTitleField.setText( mCrime.toString() );
@@ -148,8 +172,58 @@ public class CrimeFragment extends Fragment {
 		}
 	}
 	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		CrimeLab.get( getActivity() ).saveCrimes();
+	}
+	
+	@Override 
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+		getActivity().getMenuInflater().inflate( R.menu.crime_list_item_context, menu);
+		return;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch(item.getItemId())
+		{
+		case android.R.id.home:
+			/*
+			Intent i = new Intent(getActivity(), CrimeListActivity.class);
+			// Tells android to look for an existing instance of the Activity
+			// in the stack and if there is some, pop every other activity off
+			// the stack so that the activity being started will be the top-most
+			i.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(i);
+			*/
+			
+			// Better way to navigate to the parent : Define the parent
+			// through <meta-data> in the manifest and navigate to it using
+			// NavUtils methods
+			// One of the advantage, is that the Fragment doesn't need to know
+			// about the parent activity which is defined in the Manifest.xml
+			if (NavUtils.getParentActivityName(getActivity()) != null)
+			{
+				NavUtils.navigateUpFromSameTask(getActivity());
+			}
+			
+			return true;
+		case R.id.menu_item_delete_crime:
+			CrimeLab.get( getActivity()).deleteCrime( mCrime);
+			getActivity().finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
 	private void updateDate()
 	{
-		mDateButton.setText( DateFormat.format( "EEEE, MMM d, yyyy HH:mm", mCrime.getDate()).toString() );
+		mDateButton.setText( mCrime.getDateAsFormattedString() );
 	}
 }

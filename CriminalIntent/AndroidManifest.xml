@@ -20,13 +20,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--  <activity
+        <!--  
+        <activity
             android:name="com.example.criminalintent.CrimeActivity"
             android:label="@string/title_activity_crime" >
-        </activity> -->
+        </activity> 
+        -->
         <activity
             android:name="com.example.criminalintent.CrimePagerActivity"
             android:label="@string/title_activity_crime" >
+            <!--
+            The following meta-data defines the parent Activity, and is used by
+            PackageManager
+            Is possible to define custom key-values pair as meta-data and 
+			fetch them as needed 
+            -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CrimeListActivity" 
+                />
         </activity>
     </application>
 

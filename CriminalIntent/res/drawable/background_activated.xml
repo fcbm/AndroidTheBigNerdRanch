@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <!-- This XML says, "When the view that references this drawable is 
+    	 in the activated state, use the value of  android:drawable . 
+		 Otherwise, do nothing." See res/layout/list_item_crime.xml to see
+		 when it's used -->
+		 
+    <item
+        android:state_activated="true"
+        android:drawable="@android:color/darker_gray"/>
+
+</selector>

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 // This class will be a Singleton:
 // A singleton exists as long as the application stays in memory, so storing 
@@ -11,13 +13,29 @@ import android.content.Context;
 // happens with activities, fragments, and their life-cycles. 
 public class CrimeLab {
 
+	private static final String TAG = "CrimeLab";
+	private static final String FILENAME = "crimes.json";
+	
 	private static CrimeLab sCrimeLab;
 	private Context mAppContex;
 	private ArrayList<Crime> mCrimes;
+	private CriminalIntentJSONSerializer mSerializer;
 	
 	private CrimeLab(Context appContext)
 	{
 		mAppContex = appContext;
+		mSerializer = new CriminalIntentJSONSerializer(mAppContex, FILENAME);
+		
+		try
+		{
+			mCrimes = mSerializer.loadCrimes();
+		} catch (Exception e) 
+		{
+			mCrimes = new ArrayList<Crime>();
+			Log.e(TAG, "Error loading crimes: ", e);
+		}
+		
+		/*
 		mCrimes = new ArrayList<Crime>();
 		
 		for (int i = 0; i < 100; i++)
@@ -27,6 +45,7 @@ public class CrimeLab {
 			c.setSolved( i%2 == 0);
 			mCrimes.add(c);
 		}
+		*/
 	}
 	
 	// You cannot be sure that just any  Context  will exist as long as  
@@ -49,6 +68,16 @@ public class CrimeLab {
 		return mCrimes;
 	}
 	
+	public void addCrime(Crime c)
+	{
+		mCrimes.add(c);
+	}
+	
+	public void deleteCrime(Crime c)
+	{
+		mCrimes.remove( c );
+	}
+	
 	public Crime getCrime(UUID id)
 	{
 		for (Crime c : mCrimes)
@@ -59,5 +88,21 @@ public class CrimeLab {
 			}
 		}
 		return null;
+	}
+	
+	public boolean saveCrimes()
+	{
+		try
+		{
+			mSerializer.saveCrimes(mCrimes);
+			Log.d(TAG, "crimes saved to file");
+			Toast.makeText(mAppContex, "Crimes saved to file", Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+			Log.e(TAG, "Error saving crimes: ", e);
+			Toast.makeText(mAppContex, "Error saving crimes: " + e.toString(), Toast.LENGTH_LONG).show();
+			return false;
+		}
+		
+		return true;
 	}
 }
