@@ -1,0 +1,96 @@
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_remote_control_tableLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    
+    android:stretchColumns="*"
+    
+    android:background="@drawable/remote_background"
+    >
+    
+    <!-- 
+        android:stretchColumns="*" ensures
+        that the columns will be the same width
+        We are using dp instead of sp for text, this
+        means that the text will be the same size regardless
+        of the user's settings  
+     -->
+    
+    <TextView 
+        android:id="@+id/fragment_remote_control_selectedTextView"
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_weight="2"
+
+        android:gravity="center"
+        
+        android:text="0"
+        android:textSize="50dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/window_patch"
+        />
+
+    <TextView 
+        android:id="@+id/fragment_remote_control_workingTextView"
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_weight="1"
+
+        android:gravity="center"
+        
+        android:text="0"
+        android:textSize="20dp"
+        
+        android:background="@drawable/bar_patch"
+        android:textStyle="italic"
+        />
+    <!-- errata: drop android:layout_margin="15dp" from fragment_remote_control_workingTextView -->
+    <!--
+        It is possible to override the attributes
+        imported by the included layout: 
+            - android:id
+            - android:layout_*
+         
+         
+         <merge> element works with the include element.
+         It can be used as the root element of an included
+         layout.
+         When one layout includes another layout that has merge
+         as its root element, the children of the merge
+         element are directly included, they become children of the
+         parent of the include element and the merge element is discarded.
+     -->
+    
+    <include
+        android:layout_weight="1"
+        layout="@layout/button_row" 
+        />
+
+    <include
+        android:layout_weight="1"
+        layout="@layout/button_row" 
+        />
+    
+    <include
+        android:layout_weight="1"
+        layout="@layout/button_row" 
+        />    
+    
+    <TableRow
+        android:layout_weight="1" 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    
+        <Button style="@style/RemoteButton.Bold" />     
+    
+        <Button style="@style/RemoteButton" />
+    
+        <Button style="@style/RemoteButton.Bold" />
+    </TableRow>
+    
+</TableLayout>
