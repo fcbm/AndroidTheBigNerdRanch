@@ -10,8 +10,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
 
-public class CrimePagerActivity extends FragmentActivity {
+public class CrimePagerActivity extends FragmentActivity implements CrimeFragment.Callbacks {
 
 	// ViewPager  is a fragment container (like FrameLayout)
 	// Just like a AdapterView (such as ListView) requires an Adapter
@@ -84,5 +85,21 @@ public class CrimePagerActivity extends FragmentActivity {
 			@Override
 			public void onPageScrollStateChanged(int state) { }
 		});
+	}
+
+	@Override
+	public void onCrimeUpdated(Crime c) {
+		// This method is empty. Nothing to update in case of single pane
+	}
+
+	@Override
+	public void onDeleteCrime() {
+		// In case of single pane: close Activity and return to CrimeListActivity
+		finish();
+	}
+
+	@Override
+	public void inflateMenu(Menu menu) {
+		getMenuInflater().inflate( R.menu.crime_list_item_context, menu);
 	}
 }

@@ -3,7 +3,7 @@ package com.example.criminalintent;
 import java.util.ArrayList;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -28,10 +28,34 @@ import android.widget.TextView;
 public class CrimeListFragment extends ListFragment {
 
 	private static final String TAG = "CrimeListFragment";
-	private static final int REQUEST_CODE_NEW_CRIME = 0;
 	private ArrayList<Crime> mCrimes;
 	private ArrayAdapter<Crime> mAdapter;
 	private boolean mSubtitleVisible;
+	private Callbacks mCallbacks;
+	
+	public interface Callbacks 
+	{
+		void onCrimeSelected(Crime c);
+	}
+	
+	public void updateUI()
+	{
+		((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+		mCallbacks = (Callbacks) activity;
+	}
+	
+	@Override
+	public void onDetach()
+	{
+		super.onDetach();
+		mCallbacks = null;
+	}
 	
 	@Override
 	public void onResume()
@@ -39,7 +63,7 @@ public class CrimeListFragment extends ListFragment {
 		super.onResume();
 		// list view’s adapter needs to be informed that the data set 
 		// has changed (or may have changed) 
-		((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+		updateUI();
 	}
 	
 	@Override
@@ -47,7 +71,7 @@ public class CrimeListFragment extends ListFragment {
 	{
 		super.onCreate(savedInstanceState);
 		// Needed to preserve the state of subtitle visibility
-		setRetainInstance( true );
+		//setRetainInstance( true );
 		mSubtitleVisible = false;
 		
 		// Tells FragmentManager that this Fragment has an OptionsMenu associated
@@ -155,7 +179,7 @@ public class CrimeListFragment extends ListFragment {
 						mode.finish();
 						
 						// Notify the adapter to update itself
-						adapter.notifyDataSetChanged();
+						updateUI();
 						return true;
 					}
 					
@@ -205,9 +229,11 @@ public class CrimeListFragment extends ListFragment {
 		Log.d(TAG, c.getTitle() + " was clicked");
 		
 		//Intent i = new Intent(getActivity(), CrimeActivity.class);
-		Intent i = new Intent(getActivity(), CrimePagerActivity.class);
-		i.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
-		startActivity(i);
+		
+		//Intent i = new Intent(getActivity(), CrimePagerActivity.class);
+		//i.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
+		//startActivity(i);
+		mCallbacks.onCrimeSelected(c);
 	}
 	
 	// Notice : Fragment (as Activity) comes with its own set of options menu callbacks
@@ -277,9 +303,15 @@ public class CrimeListFragment extends ListFragment {
 	{
 		Crime crime = new Crime();
 		CrimeLab.get(getActivity()).addCrime( crime );
-		Intent i = new Intent(getActivity(), CrimePagerActivity.class);
-		i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
-		startActivityForResult(i, REQUEST_CODE_NEW_CRIME);
+		
+		//Intent i = new Intent(getActivity(), CrimePagerActivity.class);
+		//i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
+		//startActivityForResult(i, REQUEST_CODE_NEW_CRIME);
+		
+		// We need to reload the list immediately in case of dual pane upon
+		// adding a new crime, because the list is always visible in this case
+		updateUI();
+		mCallbacks.onCrimeSelected(crime);
 	}
 	
 	@Override
@@ -319,7 +351,7 @@ public class CrimeListFragment extends ListFragment {
 			CrimeLab.get(getActivity()).deleteCrime(c);
 			
 			// Notify the adapter to update the list
-			adapter.notifyDataSetChanged();
+			updateUI();
 			return true;
 		}
 		

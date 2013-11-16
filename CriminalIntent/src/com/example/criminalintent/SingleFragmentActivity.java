@@ -10,11 +10,17 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
 	
 	protected abstract Fragment createFragment();
 	
+	// Subclasses can choose to override this method to return a different layout
+	protected int getLayoutResId()
+	{
+		return R.layout.activity_fragment;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_fragment);
+		setContentView( getLayoutResId() );
 		FragmentManager fm = getSupportFragmentManager();
 		
 		Fragment fragment = fm.findFragmentById( R.id.fragmentContainer );

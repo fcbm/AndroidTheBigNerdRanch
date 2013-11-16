@@ -36,7 +36,7 @@ import android.widget.ImageView;
 
 public class CrimeFragment extends Fragment {
 	
-	private static final String TAG = "CrimeFragment";
+	//private static final String TAG = "CrimeFragment";
 	
 	private Crime mCrime;
 	private EditText mTitleField; 
@@ -47,6 +47,7 @@ public class CrimeFragment extends Fragment {
 	private ImageView mPhotoView;
 	private Button mReportButton;
 	private Button mSuspectButton;
+	private Callbacks mCallbacks;
 	
 	public static final String EXTRA_CRIME_ID = "com.example.criminalintent.crime_id";
 	private static final String DATE_DIALOG_TAG = "date";
@@ -56,8 +57,28 @@ public class CrimeFragment extends Fragment {
 	private static final int REQUEST_DATE_OR_TIME = 1;
 	private static final int REQUEST_PHOTO = 2;
 	private static final int REQUEST_CONTACT = 3;
-	
 
+	public interface Callbacks
+	{
+		void onCrimeUpdated(Crime c);
+		void onDeleteCrime();
+		void inflateMenu(Menu menu);
+	}
+
+	@Override
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+		mCallbacks = (Callbacks) activity;
+	}
+	
+	@Override
+	public void onDetach()
+	{
+		super.onDetach();
+		mCallbacks = null;
+	}
+	
 	public static Fragment newInstance(UUID crimeId)
 	{
 		Bundle args = new Bundle();
@@ -117,6 +138,8 @@ public class CrimeFragment extends Fragment {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				
 				mCrime.setTitle( s.toString() );
+				getActivity().setTitle( mCrime.getTitle() );
+				mCallbacks.onCrimeUpdated( mCrime );
 			}
 			
 			@Override
@@ -165,6 +188,7 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				mCrime.setSolved( isChecked );
+				mCallbacks.onCrimeUpdated( mCrime );
 			}
 		});
 		
@@ -248,12 +272,14 @@ public class CrimeFragment extends Fragment {
 		{
 			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
+			mCallbacks.onCrimeUpdated( mCrime );
 			updateDate();
 		}
 		else if (requestCode == REQUEST_DATE_OR_TIME)
 		{
 			Date date = (Date) data.getSerializableExtra( DateTimeFragment.EXTRA_DATE );
 			mCrime.setDate(date);
+			mCallbacks.onCrimeUpdated( mCrime );
 			updateDate();
 		}
 		else if (requestCode == REQUEST_PHOTO)
@@ -264,6 +290,7 @@ public class CrimeFragment extends Fragment {
 			{
 				Photo p = new Photo(fname);
 				mCrime.setPhoto(p);
+				mCallbacks.onCrimeUpdated( mCrime );
 				showPhoto();
 			}
 		}
@@ -288,6 +315,7 @@ public class CrimeFragment extends Fragment {
 			c.moveToFirst();
 			String suspect = c.getString( 0 );
 			mCrime.setSuspect( suspect );
+			mCallbacks.onCrimeUpdated( mCrime );
 			mSuspectButton.setText( suspect );
 			c.close();
 		}
@@ -364,7 +392,8 @@ public class CrimeFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
-		getActivity().getMenuInflater().inflate( R.menu.crime_list_item_context, menu);
+		// getActivity().getMenuInflater().inflate( R.menu.crime_list_item_context, menu);
+		mCallbacks.inflateMenu(menu);
 		return;
 	}
 	
@@ -396,7 +425,7 @@ public class CrimeFragment extends Fragment {
 			return true;
 		case R.id.menu_item_delete_crime:
 			CrimeLab.get( getActivity()).deleteCrime( mCrime);
-			getActivity().finish();
+			mCallbacks.onDeleteCrime();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

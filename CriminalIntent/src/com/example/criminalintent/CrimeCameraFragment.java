@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Notification.Action;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
