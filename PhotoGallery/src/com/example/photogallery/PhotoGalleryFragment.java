@@ -2,9 +2,10 @@ package com.example.photogallery;
 
 import java.util.ArrayList;
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class PhotoGalleryFragment extends Fragment {
@@ -61,11 +61,25 @@ public class PhotoGalleryFragment extends Fragment {
 		// lead to memory leaks
 		new FetchItemTask().execute();
 		
-		mThumbnailThread = new ThumbnailDownloader<ImageView>();
+		mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
+		mThumbnailThread.setListener( new ThumbnailDownloader.Listener<ImageView> () {
+
+			@Override
+			public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
+				if (isVisible())
+				{
+					imageView.setImageBitmap( thumbnail );
+				}
+			}
+		});
 		// Creates the Thread
 		mThumbnailThread.start();
 		
 		// HanldlerThread is needed to prepare a Looper
+		// This method returns the Looper associated with this thread. 
+		// If this thread not been started or for any reason is isAlive() returns false, 
+		// this method will return null. 
+		// If this thread has been started, this method will *block* until the looper has been initialized.
 		mThumbnailThread.getLooper();
 		
 		Log.i(TAG, "Background thread started");
@@ -75,9 +89,21 @@ public class PhotoGalleryFragment extends Fragment {
 	public void onDestroy()
 	{
 		super.onDestroy();
+		// This is critical, if we don't call quit the Thread will stay alive
+		// TODO: check what happens if the process is killed by the system and
+		// onDestroy is not called
 		mThumbnailThread.quit();
 		Log.i(TAG, "Background thread stopped");
 	}
+	
+	@Override
+	public void onDestroyView()
+	{
+		// Clear the enqueued requests in case user rotates the screen
+		// because all the ImageView in the map become invalid in that case
+		super.onDestroyView();
+		mThumbnailThread.clearQueue();
+	}	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
@@ -87,6 +113,9 @@ public class PhotoGalleryFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_photo_gallery, parent , false);
 		
 		mGridView = (GridView) v.findViewById( R.id.gridView );
+		
+		Log.d(TAG, "Test Log onCreateView");
+		
 		
 		setupAdapter();
 		
@@ -113,6 +142,9 @@ public class PhotoGalleryFragment extends Fragment {
 			ImageView iv = (ImageView) convertView.findViewById( R.id.gallery_item_imageView );
 			iv.setImageResource( R.drawable.brian_up_close );
 			
+			// This step allows to download only the images that are required
+			// by GridView, and not all the URLs fetched by FlickrFetch
+			// AsyncTask is ill-suited for repetitive and long running tasks
 			GalleryItem item = getItem(position);
 			mThumbnailThread.queueThumbnail(iv, item.getUrl());
 			
