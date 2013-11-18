@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 
+    	This file is used to create "alias resources", which are
+    	resources that points to another resource
+    	Here we create an alias resource that points to layout/activity_fragment
+    	on phones and to layout/activity_twopane on tablets
+    	Note that the type attribute is what determines the inner class of the ID
+    	The corresponding tablet alternative is in res/values-sw600dp
+    -->
+    <item name="activity_masterdetal" type="layout">@layout/activity_twopane</item>
+</resources>

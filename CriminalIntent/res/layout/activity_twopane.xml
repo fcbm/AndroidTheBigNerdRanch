@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" 
+    
+    android:baselineAligned="false"
+    android:showDividers="middle"
+    >
+    <!-- 
+    	Note that fragmentContainer id is duplicated.
+    	This is done to let SingleFragmentActivity work
+    	with single and multiple panels
+     -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        />
+    <FrameLayout
+        android:id="@+id/detailFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        />
+    
+</LinearLayout>

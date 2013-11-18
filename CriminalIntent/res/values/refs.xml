@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 
+    	This file is used to create "alias resources", which are
+    	resources that points to another resource
+    	Here we create an alias resource that points to layout/activity_fragment
+    	on phones and to layout/activity_twopane on tablets
+    	Note that the type attribute is what determines the inner class of the ID
+    	The corresponding phone alternative is in res/values
+    	
+    	sw in sw600 qualifier means "smallest width" but refers to the screen's 
+    	smallest dimension. 
+    	For compatibility reasons with Android 3.0 and 3.1 we have a copy of this 
+    	file in res/values-xlarge also
+    -->
+    <item name="activity_masterdetal" type="layout">@layout/activity_fragment</item>
+</resources>
