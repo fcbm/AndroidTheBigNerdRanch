@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -94,6 +95,12 @@ public class PhotoGalleryFragment extends Fragment {
 		// lead to memory leaks
 		// new FetchItemTask().execute();
 		updateItems();
+
+		// Debug Code:
+		//Intent i = new Intent(getActivity(), PollService.class);
+		//getActivity().startService(i);
+		// Debug Code:
+		//PollService.startServiceAlarm( getActivity(), true );
 		
 		mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
 		mThumbnailThread.setListener( new ThumbnailDownloader.Listener<ImageView> () {
@@ -251,6 +258,7 @@ public class PhotoGalleryFragment extends Fragment {
 		}
 	}
 	
+	@TargetApi(11) // needed for invalidateOptionsMenu
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -277,8 +285,43 @@ public class PhotoGalleryFragment extends Fragment {
 			updateItems();
 			return true;
 		}
+		else if (item.getItemId() == R.id.menu_item_toggle_polling)
+		{
+			boolean shouldStartAlarm = !PollService.isServiceAlarmOn( getActivity() );
+			PollService.startServiceAlarm( getActivity(), shouldStartAlarm);
+			
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			{
+				// After Android 3.0 this is needed to tell the ActionBar
+				// to call onPrepareOptionsMenu and to refresh the items
+				getActivity().invalidateOptionsMenu();
+			}
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
+	}
+	
+	// This method is needed to update dynamically the
+	// content of the options menu
+	@Override
+	public void onPrepareOptionsMenu(Menu menu)
+	{
+		super.onPrepareOptionsMenu(menu);
+		
+		MenuItem toggleItem = menu.findItem( R.id.menu_item_toggle_polling );
+		
+		// Notice we don't do the test on the menu item title
+		// but on the real status of the alarm
+		if (PollService.isServiceAlarmOn( getActivity() ))
+		{
+			toggleItem.setTitle( R.string.stop_polling);
+		}
+		else
+		{
+			toggleItem.setTitle( R.string.start_polling);
+		}
+		
 	}
 	
 }

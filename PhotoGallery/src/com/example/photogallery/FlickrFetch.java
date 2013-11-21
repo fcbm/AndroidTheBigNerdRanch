@@ -18,6 +18,7 @@ import android.util.Log;
 public class FlickrFetch {
 
 	public static final String PREF_SEARCH_QUERY = "searchQuery";
+	public static final String PREF_LAST_ID = "lastResultId";
 	
 	private static final String TAG = "FlickrFetch";
 	private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
@@ -41,7 +42,7 @@ public class FlickrFetch {
 				.appendQueryParameter("method", METHOD_GET_RECENT)
 				.appendQueryParameter("api_key", API_KEY)
 				.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-				.appendQueryParameter(PARAM_PAGE, "" + page)
+				//.appendQueryParameter(PARAM_PAGE, "" + page)
 				.build().toString();
 		
 		return downloadGalleryItems(url);
