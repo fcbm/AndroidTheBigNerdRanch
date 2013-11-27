@@ -35,14 +35,23 @@ public class PollService extends IntentService {
 		// This packages an invocation of Context.startService(i);
 		PendingIntent pi = PendingIntent.getService( ctx, requestCode, i, flags);
 		
-		// AlarmManager is a system service that can send Intent for you
-		// It works also when the app is not started
+		// pi.send(requestCode) performs the operation associated to the PendingIntent
+		
+		// AlarmManager is a system service that *can send Intent for you*
+		// It works also when the application is not started
 		AlarmManager am = (AlarmManager) ctx.getSystemService( Context.ALARM_SERVICE );
 		
 		if (isOn)
 		{
 			int type = AlarmManager.RTC;
 			// We can only register one Alarm for each PendingIntent
+			// set() is used for not repeating alarms, no need to call cancel() in this case
+			// setInexactRepeating() is more efficient when precision is not required
+			// If there is already an alarm scheduled for the same IntentSender, it will first be canceled
+			// Note: for timing operations (ticks, timeouts, etc) it is easier and much more efficient to use Handler
+			// If your application wants to allow the delivery times to drift in order to guarantee that at least a 
+			// certain time interval always elapses between alarms, then the approach to take is to use one-time alarms, 
+			// scheduling the next one yourself when handling each alarm delivery. 
 			am.setRepeating(type, System.currentTimeMillis(), POLL_INTERVAL, pi);
 		}
 		else
@@ -50,6 +59,9 @@ public class PollService extends IntentService {
 			// This cancels the alarm
 			am.cancel( pi );
 			// We also want to cancel the PendingIntent (TODO: check why)
+			// We cancel the PendingIntent so that isServiceAlarmOn will
+			// return null in case the alarm is not active (in combination with PendingIntent.FLAG_NO_CREATE)
+			// Notice : it seems there is no way to do the same using AlarmManager
 			pi.cancel();
 		}
 	}
@@ -59,13 +71,14 @@ public class PollService extends IntentService {
 		Intent i = new Intent(ctx, PollService.class);
 		
 		int requestCode = 0;
-		// This flag says if the PI does not already exist, return null instad of
+		// This flag says if the PI does not already exist, return null instead of
 		// creating it
 		int flags = PendingIntent.FLAG_NO_CREATE;
 
 		// Notice : requesting the same PendingIntent twice will get the same PendingIntent
 		// This is useful to test whether a  PendingIntent already exists or to cancel
 		// the previously issued PendingIntent
+		// TODO: check the documentation to see when two PendingIntents are considered equal
 		PendingIntent pi = PendingIntent.getService( ctx, requestCode, i, flags);
 		
 		return pi != null;
