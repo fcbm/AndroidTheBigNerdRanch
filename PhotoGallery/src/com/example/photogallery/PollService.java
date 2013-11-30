@@ -2,16 +2,20 @@ package com.example.photogallery;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -21,6 +25,14 @@ public class PollService extends IntentService {
 	private static final String TAG = "PollService";
 	
 	private static final int POLL_INTERVAL = 1000 * 15; // 15sec
+	
+	public static final String PREF_IS_ALARM_ON = "isAlarmOn";
+	public static final String ACTION_SHOW_NOTIFICATION = "com.example.photogallery.SHOW_NOTIFICATION";
+	
+	// This permission is defined in Manifest.xml and redefined in code
+	// It's used in <uses-permission> and passed both when sending the broadcast intent
+	// and when registering the BroadcastReceiver, after the filter
+	public static final String PERM_PRIVATE = "com.example.photogallery.PRIVATE";
 	
 	public PollService() {
 		super(TAG);
@@ -64,6 +76,11 @@ public class PollService extends IntentService {
 			// Notice : it seems there is no way to do the same using AlarmManager
 			pi.cancel();
 		}
+		
+		PreferenceManager.getDefaultSharedPreferences( ctx )
+			.edit()
+			.putBoolean(PREF_IS_ALARM_ON, isOn)
+			.commit();
 	}
 	
 	public static boolean isServiceAlarmOn(Context ctx)
@@ -83,6 +100,36 @@ public class PollService extends IntentService {
 		
 		return pi != null;
 				
+	}
+	
+	private void showBackgroundNotification(int requestCode, Notification notification)
+	{
+		Intent i = new Intent( ACTION_SHOW_NOTIFICATION );
+		i.putExtra( "REQUEST_CODE", requestCode);
+		i.putExtra("NOTIFICATION", notification);
+
+		String permission = PERM_PRIVATE;
+		BroadcastReceiver br = null;
+		Handler handler = null;
+		// will be retrieved by the receiver with getResultData()
+		// will be modified by intermediate receivers with setResultData()
+		String resultData = null;
+		// will be retrieved by the receiver with getResultExtra()
+		// will be modified by intermediate receivers with setResultExtra()
+		Bundle resultExtra = null;
+		// will be retrieved by the receiver with getResultCode()
+		// will be modified by intermediate receivers with setResultCode()
+		int initialCode = Activity.RESULT_OK; 
+		
+		// Notice: we do this instead of sendBroadcast( new Intent(ACTION_SHOW_NOTIFICATION) , PERM_PRIVATE );
+		// Instead of showing the Notification we package it into an Intent and we broadcast the intent.
+		// The Intent will be received by VisibleFragment first (if active) which will set the result to Activity.RESULT_CANCELED
+		// In case VisibleFragment is not visible, the result will stay Activity.RESULT_OK (see below).
+		// The last component receiving the Intent will be NotificationReceiver (due to its low priority),
+		// if the result is the original one (RESULT_OK) it will show the Notification packaged in the Intent
+		// if the result is RESULT_CANCELED it means VisibleFragment modified the result value and that it is visible
+		// and the Notification will not be shown
+		sendOrderedBroadcast(i, permission, br, handler, initialCode, resultData, resultExtra);
 	}
 	
 	@Override
@@ -146,10 +193,15 @@ public class PollService extends IntentService {
 					.setAutoCancel( true )
 					.build();
 			
+			/*
 			NotificationManager nm = (NotificationManager)getSystemService( Context.NOTIFICATION_SERVICE );
 			
 			int id = 0;
 			nm.notify( id, n);
+			
+			sendBroadcast( new Intent(ACTION_SHOW_NOTIFICATION) , PERM_PRIVATE );
+			*/
+			showBackgroundNotification(requestCode, n);
 		}
 		else
 		{

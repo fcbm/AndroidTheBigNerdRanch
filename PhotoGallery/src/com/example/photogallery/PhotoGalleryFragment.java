@@ -30,7 +30,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 // TODO : it seems when the app crashes when it is idle for long time
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
 	private final static String TAG = "PhotoGalleryFragment";
 	
