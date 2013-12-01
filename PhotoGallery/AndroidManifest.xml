@@ -59,6 +59,10 @@
                 android:resource="@xml/searchable" 
                 />
         </activity>
+        <activity
+            android:name="com.example.photogallery.PhotoPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" 
+            />
         <service
             android:name="com.example.photogallery.PollService" 
             />

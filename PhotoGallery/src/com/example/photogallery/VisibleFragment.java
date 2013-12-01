@@ -5,14 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 public class VisibleFragment extends Fragment {
 	
-	private final static String TAG = "VisibleFragment";
+	//private final static String TAG = "VisibleFragment";
 	
 	private BroadcastReceiver mShowOnNotification = new BroadcastReceiver() {
 		

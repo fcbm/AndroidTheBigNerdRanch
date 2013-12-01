@@ -27,7 +27,7 @@ public class FlickrFetch {
 	private static final String METHOD_SEARCH = "flickr.photos.search";
 	private static final String PARAM_EXTRAS = "extras";
 	private static final String PARAM_TEXT = "text";
-	private static final String PARAM_PAGE = "page";
+	//private static final String PARAM_PAGE = "page";
 	
 	private static final String EXTRA_SMALL_URL = "url_s";
 	
@@ -99,11 +99,13 @@ public class FlickrFetch {
 				String id = parser.getAttributeValue( null, "id");
 				String caption = parser.getAttributeValue( null, "title");
 				String smallUrl = parser.getAttributeValue( null, EXTRA_SMALL_URL);
+				String owner = parser.getAttributeValue( null, "owner");
 				
 				GalleryItem item = new GalleryItem();
 				item.setId(id);
 				item.setCaption( caption) ;
 				item.setUrl(smallUrl);
+				item.setOwner(owner);
 				
 				items.add(item);
 			}
