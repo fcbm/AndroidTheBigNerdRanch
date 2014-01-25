@@ -37,6 +37,10 @@ public class PollService extends IntentService {
 		super(TAG);
 	}
 
+	
+	// Notice : if this method was not static we would need to pass
+	// a Context parameter anyway because "this" can't be used as a Context
+	// till client calls startService() and after onStartCommand()
 	public static void startServiceAlarm(Context ctx, boolean isOn)
 	{
 		Intent i = new Intent(ctx, PollService.class);
@@ -183,6 +187,7 @@ public class PollService extends IntentService {
 			int flags = 0;
 			PendingIntent pi = PendingIntent.getActivity(this, requestCode, new Intent(this, PhotoGalleryActivity.class), flags);
 			
+			// Notice : we use NotificationCompat.Buildert instead of Notification.Builder for compatibility with API 8
 			Notification n = new NotificationCompat.Builder(this)
 					.setTicker( r.getString( R.string.new_pictures_title))
 					.setSmallIcon( android.R.drawable.ic_menu_report_image)

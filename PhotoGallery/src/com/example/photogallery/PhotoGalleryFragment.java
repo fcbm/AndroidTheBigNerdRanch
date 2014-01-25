@@ -129,6 +129,8 @@ public class PhotoGalleryFragment extends VisibleFragment {
 	
 	public void updateItems()
 	{
+		// Notice we create a new object each time we want to fetch items
+		// because AsyncTask can be used only once
 		new FetchItemTask().execute();
 	}
 	

@@ -73,6 +73,8 @@ public class FlickrFetch {
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			XmlPullParser parser = factory.newPullParser();
 			
+			// We can also pass directly the InputStream object returned
+			// by URLConnection.getInputStream()
 			parser.setInput( new StringReader( xmlString) );
 			
 			parseItems(items, parser);
@@ -138,6 +140,10 @@ public class FlickrFetch {
 			
 			while ((bytesRead = in.read(buffer)) > 0)
 			{
+				// TODO: try to download a big file
+				// and check if second parameter needs
+				// to be variable
+				
 				out.write(buffer, 0, bytesRead);
 			}
 			
