@@ -37,7 +37,7 @@
             The following meta-data defines the parent Activity, and is used by
             PackageManager
             Is possible to define custom key-values pair as meta-data and 
-			fetch them as needed 
+            fetch them as needed 
             -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -52,5 +52,4 @@
             
             </activity>
     </application>
-
 </manifest>

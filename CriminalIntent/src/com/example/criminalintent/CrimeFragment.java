@@ -126,6 +126,8 @@ public class CrimeFragment extends Fragment {
 		// The third parameter (boolean) tells the layoutInflater whether to add the inflated view
 		// to the view's parent. We pass false because we will add the View in the Activity's code
 		// TODO: check when is the case to pass true
+		// http://stackoverflow.com/questions/12567578/what-does-the-layoutinflater-attachtoroot-parameter-mean
+		// http://stackoverflow.com/questions/5026926/making-sense-of-layoutinflater
 		View v = inflater.inflate( R.layout.fragment_crime , parent, false);
 
 		setupAncestralNavigation();
